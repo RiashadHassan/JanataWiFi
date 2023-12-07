@@ -1,0 +1,40 @@
+{%extends 'main.html'%}
+
+{%block content%}
+
+<h1>Stock Market Data</h1>
+<table border="1">
+    <tr>
+        <th>Date</th>
+        <th>Trade Code</th>
+        <th>High</th>
+        <th>Open</th>
+        <th>Low</th>
+        <th>Close</th>
+        <th>Volume</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    {% for row in sql_data_rows %}
+        <tr>
+            <td>{{ row.date_column }}</td>
+            <td>{{ row.trade_code_column }}</td>
+            <td>{{ row.high_column }}</td>
+            <td>{{ row.low_column }}</td>
+            <td>{{ row.open_column }}</td>
+            <td>{{ row.close_column }}</td>
+            <td>{{ row.volume_column }}</td>
+            
+            <td>
+                <a href={% url 'update_delete' row.id %}><button type="submit">Edit</button></a>
+               
+            </td>
+            <td>
+                <a href={% url 'update_delete' row.id %}><button type="submit">Delete</button></a>
+                
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+
+{%endblock content%}

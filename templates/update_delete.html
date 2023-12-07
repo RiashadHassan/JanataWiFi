@@ -1,0 +1,41 @@
+{%extends 'main.html'%}
+
+{%block content%}
+
+<table border="1">
+    <tr>
+        <th>Date</th>
+        <th>Trade Code</th>
+        <th>High</th>
+        <th>Open</th>
+        <th>Low</th>
+        <th>Close</th>
+        <th>Volume</th>
+    </tr>
+    <form method="POST" action="">
+        <tr>
+            <td>{{ form.date_column }}</td>
+            <td>{{ form.trade_code_column }}</td>
+            <td>{{ form.high_column }}</td>
+            <td>{{ form.low_column }}</td>
+            <td>{{ form.open_column }}</td>
+            <td>{{ form.close_column }}</td>
+            <td>{{ form.volume_column }}</td>
+            
+        </tr>
+    
+</table>
+
+
+  
+    {% csrf_token %}
+    <button type="submit" name='edit'>Update</button>
+</form>
+
+<form method="POST" action="">
+    {% csrf_token %}
+    <button type="submit" name='delete'>Delete</button>
+</form>
+    
+
+{%endblock content%}

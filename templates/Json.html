@@ -1,0 +1,29 @@
+{%extends 'main.html'%}
+
+{%block content%}
+
+<h1>Stock Market Data</h1>
+<table border="1">
+    <tr>
+        <th>Date</th>
+        <th>Trade Code</th>
+        <th>High</th>
+        <th>Open</th>
+        <th>Low</th>
+        <th>Close</th>
+        <th>Volume</th>
+    </tr>
+    {% for row in json_data_rows %}
+        <tr>
+            <td>{{ row.date }}</td>
+            <td>{{ row.trade_code }}</td>
+            <td>{{ row.high }}</td>
+            <td>{{ row.low }}</td>
+            <td>{{ row.open }}</td>
+            <td>{{ row.close }}</td>
+            <td>{{ row.volume }}</td>
+        </tr>
+    {% endfor %}
+</table>
+
+{%endblock content%}

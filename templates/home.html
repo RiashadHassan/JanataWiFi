@@ -1,0 +1,13 @@
+{%extends 'main.html'%}
+
+{%block content%}
+<center>
+    <a href={% url 'json' %}> Json</a>
+
+<a href={% url 'sql' %}> Sql</a>
+<hr>
+<a href={% url 'save_json' %}> Import Data From Json File to Database</a>
+</center>
+
+
+{%endblock content%}
