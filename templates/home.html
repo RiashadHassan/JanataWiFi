@@ -30,13 +30,15 @@
   </style>
 
   <div class="button-container">
-    <a href="{% url 'json' %}" class="button">Json</a>
+    <a href="{% url 'json' %}" class="button">Json
+    
+  </a> 
     <a href="{% url 'sql' %}" class="button">Sql</a>
   </div>
 
   <div class="centered-link">
     <a href="{% url 'save_json' %}">Import Data From Json File to Database</a>
   </div>
-  <a href="{% url 'line_chart' %}" class="button">Line Chart</a>
-    <a href="{% url 'bar_chart' %}" class="button">Bar Chart</a>
+  <a href="{% url 'charts' %}" class="button">Charts</a>
+  
 {% endblock content %}

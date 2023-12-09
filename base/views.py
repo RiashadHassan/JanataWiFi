@@ -1,8 +1,10 @@
 import json
-import plotly.express as px
 import pandas as pd
+
+import plotly.express as px
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.utils.dateparse import parse_date
@@ -91,75 +93,60 @@ class Update_Delete(View):
     
     ''' This next part is for visual charts
     '''
-def line_chart(request):
-    data = SQLMODEL.objects.all()
 
-    x = [entry.date_column for entry in data]
-    y = [entry.close_column for entry in data]
+class CombinedChartView(View):
+    template_name = 'charts.html'
 
-    fig = px.line(
-        x=x,
-        y=y,
-        title='Close over Time Chart',
-        labels={'x': 'Date', 'y': 'Close'}
-    )
+    def get(self, request):
+        data = SQLMODEL.objects.all()
 
-    chart = fig.to_html()
+        x_line = [entry.date_column for entry in data]
+        y_line = [entry.close_column for entry in data]
 
-    context = {'chart': chart}
-    return render(request, 'charts.html', context)
+        x_bar = [entry.date_column for entry in data]
+        y_bar = [entry.volume_column for entry in data]
 
+        fig_line = px.line(
+            x=x_line,
+            y=y_line,
+            title='Close over Time Chart',
+            labels={'x': 'Date', 'y': 'Close'}
+        )
 
-def bar_chart(request):
-    data= SQLMODEL.objects.all()
-    
-    x = [entry.date_column for entry in data]
-    y1 = [entry.volume_column for entry in data]
-    # y2 = [entry.volume_column for entry in data]
-    
-    fig=px.bar(x=x,  y=y1)
+        fig_bar = px.bar(x=x_bar, y=y_bar)
+
         
-    chart =fig.to_html()
+        df = pd.DataFrame({
+            'Date': x_line,
+            'Close': y_line,
+            'Volume': y_bar,
+        })
+
+        multi_axis_fig = make_subplots(specs=[[{"secondary_y": True}]])
         
-    context ={'chart': chart}
-    return render(request, 'bar_chart.html', context)
+        # Add line chart trace
+        multi_axis_fig.add_trace(
+            go.Scatter(x=df['Date'], y=df['Close'], mode='lines', name='Close', line=dict(color='blue')),
+            secondary_y=False
+        )
 
+        # Add bar chart trace
+        multi_axis_fig.add_trace(
+            go.Bar(x=df['Date'], y=df['Volume'], name='Volume', marker=dict(color='orange')),
+            secondary_y=True
+        )
 
+        # Update layout
+        multi_axis_fig.update_layout(
+            title='Multi-Axis Chart',
+            xaxis=dict(title='Date'),
+            yaxis=dict(title='Close', side='left', showgrid=False),
+            yaxis2=dict(title='Volume', side='right', overlaying='y', showgrid=False)
+        )
 
-def multi_axis_chart(request):
-    data = SQLMODEL.objects.all()
+        line_chart = fig_line.to_html()
+        bar_chart = fig_bar.to_html()
+        multi_axis_chart = multi_axis_fig.to_html()
 
-    # Assuming SQLMODEL has columns 'date_column', 'close_column', and 'volume_column'
-    df = pd.DataFrame({
-        'Date': [entry.date_column for entry in data],
-        'Close': [entry.close_column for entry in data],
-        'Volume': [entry.volume_column for entry in data],
-    })
-
-    # Create a multi-axis chart using Plotly Express
-    fig = make_subplots(specs=[[{"secondary_y": True}]])
-    
-    # Add line chart trace
-    fig.add_trace(
-        go.Scatter(x=df['Date'], y=df['Close'], mode='lines', name='Close', line=dict(color='blue')),
-        secondary_y=False
-    )
-
-    # Add bar chart trace
-    fig.add_trace(
-        go.Bar(x=df['Date'], y=df['Volume'], name='Volume', marker=dict(color='orange')),
-        secondary_y=True
-    )
-
-    # Update layout
-    fig.update_layout(
-        title='Multi-Axis Chart',
-        xaxis=dict(title='Date'),
-        yaxis=dict(title='Close', side='left', showgrid=False),
-        yaxis2=dict(title='Volume', side='right', overlaying='y', showgrid=False)
-    )
-
-    chart = fig.to_html()
-
-    context = {'chart': chart}
-    return render(request, 'multi_axis_chart.html', context)
+        context = {'line_chart': line_chart, 'bar_chart': bar_chart, 'multi_axis_chart': multi_axis_chart}
+        return render(request, self.template_name, context)
