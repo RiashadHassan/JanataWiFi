@@ -1,13 +1,42 @@
-{%extends 'main.html'%}
+{% extends 'main.html' %}
 
-{%block content%}
-<center>
-    <a href={% url 'json' %}> Json</a>
+{% block content %}
+  <style>
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px; /* Adjust the margin based on your design preference */
+    }
 
-<a href={% url 'sql' %}> Sql</a>
-<hr>
-<a href={% url 'save_json' %}> Import Data From Json File to Database</a>
-</center>
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 0 10px;
+      background-color: #3498db; /* Change the background color to your preference */
+      color: #fff;
+      text-decoration: none;
+      font-size: 18px; /* Adjust the font size based on your design preference */
+      border-radius: 5px;
+      background-image: url('path/to/your/image.jpg'); /* Add the path to your background image */
+      background-size: cover;
+    }
 
+    .centered-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px; /* Adjust the margin based on your design preference */
+    }
+  </style>
 
-{%endblock content%}
+  <div class="button-container">
+    <a href="{% url 'json' %}" class="button">Json</a>
+    <a href="{% url 'sql' %}" class="button">Sql</a>
+  </div>
+
+  <div class="centered-link">
+    <a href="{% url 'save_json' %}">Import Data From Json File to Database</a>
+  </div>
+  <a href="{% url 'line_chart' %}" class="button">Line Chart</a>
+    <a href="{% url 'bar_chart' %}" class="button">Bar Chart</a>
+{% endblock content %}

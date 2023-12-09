@@ -1,8 +1,12 @@
 import json
 import plotly.express as px
+import pandas as pd
+import plotly.graph_objs as go
+from plotly.subplots import make_subplots
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.utils.dateparse import parse_date
+
 from .models import SQLMODEL
 from .forms import SqlModelForm
 
@@ -56,7 +60,8 @@ def display_sqlModel(request):
     return render(request, 'sql.html', context)
 
 
-#I can work with both Function and Class based views 
+
+
 class Update_Delete(View):
     
     template_name = 'update_delete.html'
@@ -72,10 +77,9 @@ class Update_Delete(View):
         row = get_object_or_404(SQLMODEL, id=pk)
         form = SqlModelForm(request.POST, instance=row)
         
-        if 'edit' in request.POST:
-           if form.is_valid():
-               form.save()
-               return redirect('sql')
+        if 'edit' in request.POST and form.is_valid():
+            form.save()
+            return redirect('sql')
         
         if 'delete' in request.POST:
             row.delete()
@@ -88,17 +92,74 @@ class Update_Delete(View):
     ''' This next part is for visual charts
     '''
 def line_chart(request):
-    data= SQLMODEL.objects.all()
-        
-    fig=px.line(
-        x=[c.date_column for c in data],
-        y=[c.close_column for c in data],
+    data = SQLMODEL.objects.all()
+
+    x = [entry.date_column for entry in data]
+    y = [entry.close_column for entry in data]
+
+    fig = px.line(
+        x=x,
+        y=y,
         title='Close over Time Chart',
-        labels ={'x':'Date', 'y':'Close'}
-        )
+        labels={'x': 'Date', 'y': 'Close'}
+    )
+
+    chart = fig.to_html()
+
+    context = {'chart': chart}
+    return render(request, 'charts.html', context)
+
+
+def bar_chart(request):
+    data= SQLMODEL.objects.all()
     
+    x = [entry.date_column for entry in data]
+    y1 = [entry.volume_column for entry in data]
+    # y2 = [entry.volume_column for entry in data]
+    
+    fig=px.bar(x=x,  y=y1)
         
     chart =fig.to_html()
         
     context ={'chart': chart}
-    return render(request, 'charts.html', context)
+    return render(request, 'bar_chart.html', context)
+
+
+
+def multi_axis_chart(request):
+    data = SQLMODEL.objects.all()
+
+    # Assuming SQLMODEL has columns 'date_column', 'close_column', and 'volume_column'
+    df = pd.DataFrame({
+        'Date': [entry.date_column for entry in data],
+        'Close': [entry.close_column for entry in data],
+        'Volume': [entry.volume_column for entry in data],
+    })
+
+    # Create a multi-axis chart using Plotly Express
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+    
+    # Add line chart trace
+    fig.add_trace(
+        go.Scatter(x=df['Date'], y=df['Close'], mode='lines', name='Close', line=dict(color='blue')),
+        secondary_y=False
+    )
+
+    # Add bar chart trace
+    fig.add_trace(
+        go.Bar(x=df['Date'], y=df['Volume'], name='Volume', marker=dict(color='orange')),
+        secondary_y=True
+    )
+
+    # Update layout
+    fig.update_layout(
+        title='Multi-Axis Chart',
+        xaxis=dict(title='Date'),
+        yaxis=dict(title='Close', side='left', showgrid=False),
+        yaxis2=dict(title='Volume', side='right', overlaying='y', showgrid=False)
+    )
+
+    chart = fig.to_html()
+
+    context = {'chart': chart}
+    return render(request, 'multi_axis_chart.html', context)
