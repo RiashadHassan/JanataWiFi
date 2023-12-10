@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.graph_objs as go
 from plotly.subplots import make_subplots
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, HttpResponse
 from django.views import View
 from django.utils.dateparse import parse_date
 
@@ -58,12 +58,16 @@ def save_json(request):
 
 def display_sqlModel(request):
     sql_data_rows = SQLMODEL.objects.all()
-
+    data_count=sql_data_rows.count()
+    
+    if data_count == 0:
+        return HttpResponse("Did you perhaps forget to import the data into the django sql model?")
+    
     context = {'sql_data_rows': sql_data_rows}
     return render(request, 'sql.html', context)
 
 
-
+'''i can work with both class based and function based views :)'''
 class Update_Delete(View):
     
     template_name = 'update_delete.html'
@@ -99,6 +103,9 @@ class CombinedChartView(View):
 
     def get(self, request):
         data = SQLMODEL.objects.all()
+        data_count = data.count()
+        if data_count == 0:
+            return HttpResponse("Populate the SQL DB with the Json data first :)")
 
         x_line = [entry.date_column for entry in data]
         y_line = [entry.close_column for entry in data]
