@@ -1,13 +1,45 @@
-{%extends 'main.html'%}
+{% extends 'main.html' %}
 
-{%block content%}
-<center>
-    <a href={% url 'json' %}> Json</a>
+{% block content %}
+  <style>
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-top: 20px; 
+    }
 
-<a href={% url 'sql' %}> Sql</a>
-<hr>
-<a href={% url 'save_json' %}> Import Data From Json File to Database</a>
-</center>
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 0 10px;
+      background-color: #3498db; 
+      color: #fff;
+      text-decoration: none;
+      font-size: 18px;
+      border-radius: 5px;
+    }
+
+    .centered-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px; 
+    }
+  </style>
 
 
-{%endblock content%}
+
+  <div class="button-container">
+    <a href="{% url 'json' %}" class="button">Json
+    
+  </a> 
+    <a href="{% url 'sql' %}" class="button">Sql</a>
+  </div>
+
+  <div class="centered-link">
+    <a href="{% url 'save_json' %}">Import Data From Json File to Database</a>
+    <hr>
+ 
+    <a href="{% url 'charts' %}" class="button">Charts</a>
+  </div>
+{% endblock content %}

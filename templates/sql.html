@@ -2,7 +2,8 @@
 
 {%block content%}
 
-<h1>Stock Market Data</h1>
+<div class= 'container'>
+    <h1>Stock Market Data</h1>
 <table border="1">
     <tr>
         <th>Date</th>
@@ -26,15 +27,16 @@
             <td>{{ row.volume_column }}</td>
             
             <td>
-                <a href={% url 'update_delete' row.id %}><button type="submit">Edit</button></a>
+                <a href={% url 'update_delete' row.id %}><button id='update_delete' type="submit">Edit</button></a>
                
             </td>
             <td>
-                <a href={% url 'update_delete' row.id %}><button type="submit">Delete</button></a>
+                <a href={% url 'update_delete' row.id %}><button id='update_delete' type="submit">Delete</button></a>
                 
             </td>
         </tr>
     {% endfor %}
 </table>
+</div>
 
 {%endblock content%}
