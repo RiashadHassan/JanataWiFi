@@ -6,28 +6,28 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-top: 20px; /* Adjust the margin based on your design preference */
+      margin-top: 20px; 
     }
 
     .button {
       display: inline-block;
       padding: 10px 20px;
       margin: 0 10px;
-      background-color: #3498db; /* Change the background color to your preference */
+      background-color: #3498db; 
       color: #fff;
       text-decoration: none;
-      font-size: 18px; /* Adjust the font size based on your design preference */
+      font-size: 18px;
       border-radius: 5px;
-      background-image: url('path/to/your/image.jpg'); /* Add the path to your background image */
-      background-size: cover;
     }
 
     .centered-link {
       display: block;
       text-align: center;
-      margin-top: 20px; /* Adjust the margin based on your design preference */
+      margin-top: 20px; 
     }
   </style>
+
+
 
   <div class="button-container">
     <a href="{% url 'json' %}" class="button">Json
@@ -38,7 +38,8 @@
 
   <div class="centered-link">
     <a href="{% url 'save_json' %}">Import Data From Json File to Database</a>
+    <hr>
+ 
+    <a href="{% url 'charts' %}" class="button">Charts</a>
   </div>
-  <a href="{% url 'charts' %}" class="button">Charts</a>
-  
 {% endblock content %}

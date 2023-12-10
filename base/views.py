@@ -58,9 +58,9 @@ def save_json(request):
 
 def display_sqlModel(request):
     sql_data_rows = SQLMODEL.objects.all()
+
     context = {'sql_data_rows': sql_data_rows}
     return render(request, 'sql.html', context)
-
 
 
 
@@ -109,13 +109,31 @@ class CombinedChartView(View):
         fig_line = px.line(
             x=x_line,
             y=y_line,
-            title='Close over Time Chart',
+            title='Close/Date Chart',
             labels={'x': 'Date', 'y': 'Close'}
         )
+        fig_line.update_layout(
+            title={
+                'font_size':22,
+                'xanchor':'center',
+                'x': 0.5
+            }
+        )
 
-        fig_bar = px.bar(x=x_bar, y=y_bar)
+        fig_bar = px.bar(
+            x=x_bar,
+            y=y_bar,
+            title='Volume/Date Chart',
+            labels={'x': 'Date', 'y': 'Volume'}
+        )
+        fig_bar.update_layout(
+            title={
+                'font_size':22,
+                'xanchor':'center',
+                'x': 0.5
+            }
+        )
 
-        
         df = pd.DataFrame({
             'Date': x_line,
             'Close': y_line,
@@ -124,21 +142,25 @@ class CombinedChartView(View):
 
         multi_axis_fig = make_subplots(specs=[[{"secondary_y": True}]])
         
-        # Add line chart trace
+       
         multi_axis_fig.add_trace(
             go.Scatter(x=df['Date'], y=df['Close'], mode='lines', name='Close', line=dict(color='blue')),
             secondary_y=False
         )
 
-        # Add bar chart trace
         multi_axis_fig.add_trace(
             go.Bar(x=df['Date'], y=df['Volume'], name='Volume', marker=dict(color='orange')),
             secondary_y=True
         )
-
-        # Update layout
+        
         multi_axis_fig.update_layout(
-            title='Multi-Axis Chart',
+            
+            title={
+                'font_size':22,
+                'xanchor':'center',
+                'x': 0.5
+            },
+            
             xaxis=dict(title='Date'),
             yaxis=dict(title='Close', side='left', showgrid=False),
             yaxis2=dict(title='Volume', side='right', overlaying='y', showgrid=False)
